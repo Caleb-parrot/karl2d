@@ -162,6 +162,14 @@ wl_init :: proc(
 	}
 
 	wl_set_title(window_title)
+	// Hyprland matches a window to its .desktop file by app_id. Karl2D only
+	// sets the title, so the launcher icon would not attach. KARL2D_APP_ID
+	// is the desktop file name when the title is a display name.
+	app_id := os.get_env("KARL2D_APP_ID", frame_allocator)
+	if len(app_id) == 0 {
+		app_id = window_title
+	}
+	wl.xdg_toplevel_set_app_id(s.toplevel, strings.clone_to_cstring(app_id, frame_allocator))
 	wl_set_window_mode(options.window_mode)
 
 	if s.decoration_manager != nil {
